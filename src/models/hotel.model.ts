@@ -10,7 +10,7 @@ interface HotelDocument extends Hotel, Document {
   getPublicData: () => HotelPublicData;
 }
 
-const hotelSchema = new Schema<Hotel>({
+const hotelSchema = new Schema<HotelDocument>({
   name: {
     type: String,
     required: true,
@@ -25,11 +25,16 @@ const hotelSchema = new Schema<Hotel>({
   },
   logo: {
     type: String,
-    required: true,
   },
   noOfRooms: {
     type: Number,
     required: true,
+  },
+  phone: {
+    type: Number,
+  },
+  altPhone: {
+    type: Number,
   },
 });
 
@@ -39,8 +44,12 @@ hotelSchema.methods.getPublicData = function (): HotelPublicData {
     logo: this.logo,
     noOfRooms: this.noOfRooms,
     email: this.email,
+    phone: this.phone,
+    altPhone: this.altPhone,
   };
 };
+
+
 hotelSchema.methods.generateToken = function (): string {
   if (!process.env.TOKEN_SECRET) {
     throw new Error(
@@ -53,4 +62,4 @@ hotelSchema.methods.generateToken = function (): string {
   return token;
 };
 
-export const HotelModel = model<Hotel>("Hotel", hotelSchema);
+export const HotelModel = model<HotelDocument>("Hotel", hotelSchema);
