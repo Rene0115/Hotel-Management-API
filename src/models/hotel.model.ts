@@ -1,0 +1,56 @@
+import { Schema, model, Document } from "mongoose";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import { Hotel, HotelPublicData } from "../interfaces/hotel.interface.js";
+
+dotenv.config();
+
+interface HotelDocument extends Hotel, Document {
+  generateToken: () => string;
+  getPublicData: () => HotelPublicData;
+}
+
+const hotelSchema = new Schema<Hotel>({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  logo: {
+    type: String,
+    required: true,
+  },
+  noOfRooms: {
+    type: Number,
+    required: true,
+  },
+});
+
+hotelSchema.methods.getPublicData = function (): HotelPublicData {
+  return {
+    name: this.name,
+    logo: this.logo,
+    noOfRooms: this.noOfRooms,
+    email: this.email,
+  };
+};
+hotelSchema.methods.generateToken = function (): string {
+  if (!process.env.TOKEN_SECRET) {
+    throw new Error(
+      "TOKEN_SECRET is not defined in your environment variables."
+    );
+  }
+  const token = jwt.sign(this.getPublicData(), process.env.TOKEN_SECRET, {
+    expiresIn: "10d",
+  });
+  return token;
+};
+
+export const HotelModel = model<Hotel>("Hotel", hotelSchema);
