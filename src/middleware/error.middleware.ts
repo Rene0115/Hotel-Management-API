@@ -4,9 +4,9 @@ export const errorHandler = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
-) =>
-{  res.status(500).send({
+) => {
+  res.status(400).send({
     success: false,
     message: err.message,
   });
-}
+};

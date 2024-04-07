@@ -11,12 +11,14 @@ export interface Hotel {
 }
 
 export interface HotelRequest extends Request {
-  name: string;
-  logo: string;
-  noOfRooms: number;
-  email: string;
-  phone: number;
-  altPhone: number;
+  hotel?: {
+    name: string;
+    logo: string;
+    noOfRooms: number;
+    email: string;
+    phone: number;
+    altPhone: number;
+  };
 }
 
 export interface HotelPublicData {
