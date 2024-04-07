@@ -40,6 +40,7 @@ const hotelSchema = new Schema<HotelDocument>({
 
 hotelSchema.methods.getPublicData = function (): HotelPublicData {
   return {
+    id: this._id,
     name: this.name,
     logo: this.logo,
     noOfRooms: this.noOfRooms,
@@ -48,7 +49,6 @@ hotelSchema.methods.getPublicData = function (): HotelPublicData {
     altPhone: this.altPhone,
   };
 };
-
 
 hotelSchema.methods.generateToken = function (): string {
   if (!process.env.TOKEN_SECRET) {

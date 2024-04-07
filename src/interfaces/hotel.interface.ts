@@ -12,6 +12,7 @@ export interface Hotel {
 
 export interface HotelRequest extends Request {
   hotel?: {
+    id: string;
     name: string;
     logo: string;
     noOfRooms: number;
@@ -22,6 +23,7 @@ export interface HotelRequest extends Request {
 }
 
 export interface HotelPublicData {
+  id: string;
   name: string;
   logo: string;
   noOfRooms: number;
