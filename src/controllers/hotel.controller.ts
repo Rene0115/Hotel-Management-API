@@ -26,18 +26,18 @@ class HotelController {
       }
 
       const nameExists = await hotelService.findOne({ name: data.name });
-      if(nameExists){
+      if (nameExists) {
         return res.status(409).send({
           success: false,
           message: "Hotel with this name already exists",
         });
       }
-      
+
       const hotel = await hotelService.create(data);
       return res.status(201).send({
         success: true,
         message: "Hotel created successfully",
-        data: hotel.getPublicData(),
+        data: { hotelData: hotel.getPublicData() },
       });
     } catch (error: any) {
       console.error(error);
@@ -73,7 +73,7 @@ class HotelController {
       return res.status(200).send({
         success: true,
         message: "Logo updated successfully",
-        data: hotel.getPublicData(),
+        data: { hotelData: hotel.getPublicData() },
       });
     } catch (error: any) {
       logger.error(error);
@@ -105,7 +105,10 @@ class HotelController {
       return res.status(200).send({
         success: true,
         message: "Login successful",
-        token: hotelExists.generateToken(),
+        data: {
+          token: hotelExists.generateToken(),
+          hotelData: hotelExists.getPublicData(),
+        },
       });
     } catch (error: any) {
       console.error(error);
