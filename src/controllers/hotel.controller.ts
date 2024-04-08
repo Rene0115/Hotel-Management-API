@@ -37,7 +37,7 @@ class HotelController {
       return res.status(201).send({
         success: true,
         message: "Hotel created successfully",
-        data: { hotelData: hotel.getPublicData() },
+        data: hotel.getPublicData(),
       });
     } catch (error: any) {
       console.error(error);
@@ -73,7 +73,7 @@ class HotelController {
       return res.status(200).send({
         success: true,
         message: "Logo updated successfully",
-        data: { hotelData: hotel.getPublicData() },
+        data: hotel.getPublicData(),
       });
     } catch (error: any) {
       logger.error(error);
@@ -102,12 +102,13 @@ class HotelController {
           .status(400)
           .send({ success: false, message: "Incorrect Credentials" });
       }
+      const hotelPublicData = hotelExists.getPublicData();
       return res.status(200).send({
         success: true,
         message: "Login successful",
         data: {
           token: hotelExists.generateToken(),
-          hotelData: hotelExists.getPublicData(),
+          ...hotelPublicData,
         },
       });
     } catch (error: any) {
