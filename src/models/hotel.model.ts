@@ -28,7 +28,6 @@ const hotelSchema = new Schema<HotelDocument>({
   },
   noOfRooms: {
     type: Number,
-    required: true,
   },
   phone: {
     type: Number,

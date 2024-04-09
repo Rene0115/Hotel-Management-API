@@ -7,7 +7,7 @@ export const signupSchema = Joi.object<Hotel>({
   name: Joi.string().required(),
   phone: Joi.number().optional(),
   altPhone: Joi.number().optional(),
-  noOfRooms: Joi.number().required(),
+  noOfRooms: Joi.number().optional(),
 });
 
 export const loginSchema = Joi.object<Hotel>({
