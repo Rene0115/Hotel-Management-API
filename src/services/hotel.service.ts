@@ -17,6 +17,8 @@ class HotelServices {
     return hotel;
   }
 
+  async update(data: object) {}
+
   async findByEmail(email: string) {
     const hotel = await HotelModel.findOne({ email: email });
     return hotel;
@@ -29,6 +31,21 @@ class HotelServices {
   async delete(data: object) {
     const hotel = await HotelModel.deleteOne(data);
     return hotel;
+  }
+  async findHotels(hotelId: string, type?: string) {
+    const query: any = {};
+
+    if (type !== undefined) {
+      query.type = status;
+    }
+
+    if (hotelId !== undefined) {
+      query.hotelId = hotelId;
+    }
+    console.log(query);
+
+    const hotels = await HotelModel.find(query);
+    return hotels;
   }
 }
 

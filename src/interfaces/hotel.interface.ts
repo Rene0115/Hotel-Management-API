@@ -31,3 +31,9 @@ export interface HotelPublicData {
   phone: number;
   altPhone: number;
 }
+
+export interface IHotelUpdate {
+  noOfRooms: number;
+  phone: number;
+  altPhone: number;
+}
