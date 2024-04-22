@@ -116,6 +116,29 @@ class HotelController {
       return res.status(400).send({ sucess: false, message: error.message });
     }
   }
+
+  async update(req: HotelRequest, res: Response) {
+    if (!req.hotel?.id) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
+    const data = req.body;
+    data.id = req.hotel.id;
+    const updateHotel = await hotelService.update(data);
+    if (!updateHotel) {
+      return res.status(400).send({
+        success: false,
+        message: "Update Failed",
+      });
+    }
+    return res.status(200).send({
+      success: true,
+      message: "Hotel updated successfully",
+      data: updateHotel.getPublicData(),
+    });
+  }
 }
 
 export default new HotelController();

@@ -37,3 +37,11 @@ export interface IHotelUpdate {
   phone: number;
   altPhone: number;
 }
+
+export interface updateHotel {
+  name: string;
+  logo: string;
+  noOfRooms: number;
+  phone: number;
+  altPhone: number;
+}

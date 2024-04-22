@@ -17,7 +17,12 @@ class HotelServices {
     return hotel;
   }
 
-  async update(data: object) {}
+  async update(data: Record<any, any>) {
+    const hotel = await HotelModel.findOneAndUpdate({ _id: data.id }, data, {
+      new: true,
+    });
+    return hotel;
+  }
 
   async findByEmail(email: string) {
     const hotel = await HotelModel.findOne({ email: email });
