@@ -4,6 +4,7 @@ import hotelService from "../services/hotel.service.js";
 import bcrypt from "bcrypt";
 import { uploadImage } from "../config/cloudinary.config.js";
 import { logger } from "../app.js";
+import { RoomCategory } from "../interfaces/room.interface.js";
 
 class HotelController {
   async createHotel(req: HotelRequest, res: Response) {
@@ -138,6 +139,44 @@ class HotelController {
       message: "Hotel updated successfully",
       data: updateHotel.getPublicData(),
     });
+  }
+
+  async createCategory(req: HotelRequest, res: Response) {
+    try {
+      if (!req.hotel?.id) {
+        return res.status(400).send({
+          success: false,
+          message: "Invalid Token",
+        });
+      }
+
+      const id = req.hotel?.id;
+
+      const data: RoomCategory = {
+        category: req.body.category.toLowerCase(),
+        hotelId: id,
+      };
+
+      const category = await hotelService.createCategory(data);
+
+      if (!category) {
+        return res.status(400).send({
+          success: false,
+          message: "Category creation failed",
+        });
+      }
+      return res.status(201).send({
+        success: true,
+        message: "Category created successfully",
+        data: category,
+      });
+    } catch (error: any) {
+      console.log(error);
+      return res.status(400).send({
+        success: false,
+        message: error.message,
+      });
+    }
   }
 }
 

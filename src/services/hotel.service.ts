@@ -1,5 +1,7 @@
 import { Hotel } from "../interfaces/hotel.interface.js";
 import { HotelModel } from "../models/hotel.model.js";
+import { roomCategoryModel } from "../models/category.model.js";
+import { RoomCategory } from "../interfaces/room.interface.js";
 
 class HotelServices {
   async create(data: Hotel) {
@@ -41,7 +43,7 @@ class HotelServices {
     const query: any = {};
 
     if (type !== undefined) {
-      query.type = status;
+      query.type = type;
     }
 
     if (hotelId !== undefined) {
@@ -51,6 +53,11 @@ class HotelServices {
 
     const hotels = await HotelModel.find(query);
     return hotels;
+  }
+
+  async createCategory(data: RoomCategory) {
+    const category = await roomCategoryModel.create(data);
+    return category;
   }
 }
 

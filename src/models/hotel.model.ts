@@ -35,7 +35,7 @@ const hotelSchema = new Schema<HotelDocument>({
   altPhone: {
     type: String,
   },
-});
+},{timestamps: true, versionKey: false});
 
 hotelSchema.methods.getPublicData = function (): HotelPublicData {
   return {
