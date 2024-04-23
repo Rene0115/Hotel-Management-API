@@ -30,10 +30,10 @@ const hotelSchema = new Schema<HotelDocument>({
     type: Number,
   },
   phone: {
-    type: Number,
+    type: String,
   },
   altPhone: {
-    type: Number,
+    type: String,
   },
 });
 

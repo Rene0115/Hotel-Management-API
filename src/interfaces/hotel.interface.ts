@@ -6,8 +6,8 @@ export interface Hotel {
   noOfRooms: number;
   email: string;
   password: string;
-  phone?: number;
-  altPhone?: number;
+  phone?: string;
+  altPhone?: string;
 }
 
 export interface HotelRequest extends Request {
@@ -17,8 +17,8 @@ export interface HotelRequest extends Request {
     logo: string;
     noOfRooms: number;
     email: string;
-    phone: number;
-    altPhone: number;
+    phone: string;
+    altPhone: string;
   };
 }
 
@@ -28,20 +28,20 @@ export interface HotelPublicData {
   logo: string;
   noOfRooms: number;
   email: string;
-  phone: number;
-  altPhone: number;
+  phone: string;
+  altPhone: string;
 }
 
 export interface IHotelUpdate {
   noOfRooms: number;
-  phone: number;
-  altPhone: number;
+  phone: string;
+  altPhone: string;
 }
 
 export interface updateHotel {
   name: string;
   logo: string;
   noOfRooms: number;
-  phone: number;
-  altPhone: number;
+  phone: string;
+  altPhone: string;
 }
