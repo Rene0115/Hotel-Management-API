@@ -227,7 +227,7 @@ class HotelController {
     }
   }
 
-  
+
 }
 
 export default new HotelController();
