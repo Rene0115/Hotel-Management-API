@@ -8,7 +8,7 @@ const store = multer({
     const ext = path.extname(file.originalname);
     console.log(file);
     
-    if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg' && ext !== ".svg") {
+    if (['.jpg', '.png', '.jpeg', '.svg'].indexOf(ext.toLowerCase()) === -1) {
       cb(new Error('File type is not supported'));
       return;
     }

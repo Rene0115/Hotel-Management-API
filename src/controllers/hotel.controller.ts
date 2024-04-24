@@ -178,6 +178,17 @@ class HotelController {
       });
     }
   }
+
+  async deleteCategory(req: HotelRequest, res: Response){
+    if (!req.hotel?.id) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
+
+    
+  }
 }
 
 export default new HotelController();
