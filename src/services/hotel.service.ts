@@ -65,6 +65,19 @@ class HotelServices {
     if (categoryToDelete) return true;
     else return false;
   }
+
+  async getHotelCategories(hotelId: string) {
+    const categoriesModel = await roomCategoryModel.find({ hotelId: hotelId });
+    const categories = categoriesModel.map((category: RoomCategory) => {
+      return category.category;
+    });
+    return categories;
+  }
+
+  async getCategoryById(id: string){
+    const category = await roomCategoryModel.findById(id);
+    return category;
+  }
 }
 
 export default new HotelServices();

@@ -157,6 +157,14 @@ class HotelController {
         hotelId: id,
       };
 
+      const hotelCategories = await hotelService.getHotelCategories(id);
+      if (hotelCategories.includes(data.category)) {
+        return res.status(409).send({
+          success: false,
+          message: "Category already exists",
+        });
+      }
+
       const category = await hotelService.createCategory(data);
 
       if (!category) {
@@ -179,7 +187,7 @@ class HotelController {
     }
   }
 
-  async deleteCategory(req: HotelRequest, res: Response){
+  async deleteCategory(req: HotelRequest, res: Response) {
     if (!req.hotel?.id) {
       return res.status(400).send({
         success: false,
@@ -187,8 +195,39 @@ class HotelController {
       });
     }
 
-    
+    const hotelId = req.hotel?.id;
+
+    const categoryId = req.params.id;
+    const category = await hotelService.getCategoryById(categoryId);
+    if (!category) {
+      return res.status(404).send({
+        success: false,
+        message: "Category does not exist",
+      });
+    }
+    if (category.hotelId !== hotelId) {
+      return res.status(403).send({
+        success: false,
+        message: "You are not authorized to delete this category",
+      });
+    }
+
+    const deletedCategory = await hotelService.deleteCategory(categoryId);
+
+    if (deletedCategory) {
+      return res.status(200).send({
+        success: true,
+        message: "Category deleted successfully",
+      });
+    } else {
+      return res.status(500).send({
+        success: false,
+        message: "Category deletion failed",
+      });
+    }
   }
+
+  
 }
 
 export default new HotelController();
