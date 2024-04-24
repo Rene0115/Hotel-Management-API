@@ -20,21 +20,15 @@ class RoomServices {
   }
 
   async getAllRoomsfilter(hotelId: string, status?: string, category?: string) {
-    const query: any = {};
-    if (hotelId !== undefined) {
-      query.hotelId = hotelId;
-    }
-    if (status !== undefined) {
-      query.status = status;
-    }
-
-    if (category !== undefined) {
-      query.category = category;
-    }
-
-    const rooms = await roomModel.find(query);
-    return rooms;
+    const query = {
+      ...(hotelId ? { hotelId } : {}),
+      ...(status ? { status } : {}),
+      ...(category ? { category } : {})
+    };
+    return await roomModel.find(query);
   }
+  
+
   async findByNumber(number: number, hotelId: string) {
     const room = await roomModel.findOne({ number: number, hotelId: hotelId });
     return room;

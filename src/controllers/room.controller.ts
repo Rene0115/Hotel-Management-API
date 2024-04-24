@@ -2,6 +2,7 @@ import { Response } from "express";
 import { Hotel, HotelRequest } from "../interfaces/hotel.interface.js";
 import hotelService from "../services/hotel.service.js";
 import roomService from "../services/room.service.js";
+import { convertArrayToString } from "../utils/functions.js";
 
 class RoomController {
   async createRooms(req: HotelRequest, res: Response) {
@@ -119,7 +120,78 @@ class RoomController {
     });
   }
 
-  
+  async assignCategoryToRoom(req: HotelRequest, res: Response) {
+    if (!req.hotel?.id) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
+
+    const category = req.body.category;
+    if (!category) {
+      return res.status(400).send({
+        success: false,
+        message: "Must provide a category",
+      });
+    }
+
+    const selectedRooms: number[] = req.body.roomNumbers;
+
+    if (selectedRooms.length < 1) {
+      return res.status(400).send({
+        success: false,
+        message: "Must select at least one room",
+      });
+    }
+    const hotelId = req.hotel?.id;
+    const hotel = await hotelService.findById(hotelId);
+    if (!hotel) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
+    const validCategory = await hotelService.getHotelCategories(hotelId);
+    if (!validCategory.includes(category)) {
+      return res.status(400).send({
+        success: false,
+        message: "Category does not exist",
+      });
+    }
+
+    const availableRooms = await roomService.getAllRoomsfilter(
+      hotelId,
+      "AVAILABLE",
+      undefined
+    );
+    const availableRoomNumbers = availableRooms.map((room) => room.number);
+
+    const unavailableRooms = selectedRooms.filter(
+      (number) => !availableRoomNumbers.includes(number)
+    );
+    if (unavailableRooms.length > 0) {
+      const rooms = convertArrayToString(unavailableRooms);
+      return res.status(400).send({
+        success: false,
+        message: `Room(s) ${rooms} are unavailable`,
+      });
+    }
+    const updatedRooms = [];
+    for (const number of selectedRooms) {
+      const room = await roomService.findByNumber(number, hotelId);
+      if (!room) return;
+      room.category = category;
+      await room.save();
+      updatedRooms.push(room);
+    }
+
+    return res.status(200).send({
+      success: true,
+      message: "Rooms updated successfully",
+      data: updatedRooms,
+    });
+  }
 }
 
 export default new RoomController();

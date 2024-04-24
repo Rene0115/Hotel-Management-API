@@ -19,3 +19,8 @@ export interface Room {
   hotelId: string;
   status: "AVAILABLE" | "BOOKED";
 }
+
+export interface AssignCategoryToRooms {
+  category: string;
+  roomNumbers: Array<number>;
+}
