@@ -59,6 +59,12 @@ class HotelServices {
     const category = await roomCategoryModel.create(data);
     return category;
   }
+
+  async deleteCategory(id: string) {
+    const categoryToDelete = await roomCategoryModel.findByIdAndDelete(id);
+    if (categoryToDelete) return true;
+    else return false;
+  }
 }
 
 export default new HotelServices();
