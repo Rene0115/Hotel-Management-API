@@ -14,5 +14,6 @@ hotelRouter.put("/update-logo", authentication, store.single("image"), hotelCont
 hotelRouter.put("/update", authentication, validator(updateSchema), hotelController.update)
 hotelRouter.post("/create-category", authentication, validator(createCategorySchema), hotelController.createCategory)
 hotelRouter.delete("/delete-category/:id", authentication, hotelController.deleteCategory)
+hotelRouter.get("/categories", authentication, hotelController.getCategories)
 
 export default hotelRouter;

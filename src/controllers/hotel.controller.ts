@@ -152,8 +152,9 @@ class HotelController {
 
       const id = req.hotel?.id;
 
+
       const data: RoomCategory = {
-        category: req.body.category.toLowerCase(),
+        category: req.body.category.trim().toLowerCase(),
         hotelId: id,
       };
 
@@ -226,8 +227,31 @@ class HotelController {
       });
     }
   }
+  async getCategories(req: HotelRequest, res: Response) {
+    if (!req.hotel?.id) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
 
+    const hotelId = req.hotel?.id;
 
+    const hotel = await hotelService.findById(hotelId);
+    if (!hotel) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
+
+    const categories = await hotelService.getHotelCategories(hotelId);
+    return res.status(200).send({
+      success: true,
+      message: "Categories retrieved successfully",
+      data: categories,
+    });
+  }
 }
 
 export default new HotelController();

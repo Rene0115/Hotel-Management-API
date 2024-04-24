@@ -13,7 +13,13 @@ class RoomController {
     }
 
     const hotelId = req.hotel?.id;
-
+    const hotel = await hotelService.findById(hotelId);
+    if (!hotel) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
     const number = parseInt(req.body.number);
     if (!number) {
       return res.status(400).send({
@@ -29,6 +35,10 @@ class RoomController {
         message: "Error creating rooms",
       });
     }
+
+    hotel.noOfRooms = hotel.noOfRooms + number;
+    await hotel.save();
+
     return res.status(200).send({
       success: true,
       message: "Rooms created successfully",
@@ -45,6 +55,15 @@ class RoomController {
     }
 
     const hotelId = req.hotel?.id;
+
+    const hotel = await hotelService.findById(hotelId);
+    if (!hotel) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
+
     const status = req.query.status;
     const category = req.query.category;
     const rooms = await roomService.getAllRoomsfilter(
@@ -53,17 +72,54 @@ class RoomController {
       category as string | undefined
     );
 
+    hotel.noOfRooms = rooms.length;
+    await hotel.save();
     if (rooms.length < 1) {
       return res.status(404).send({
         success: false,
         message: "No rooms match this query",
       });
     }
+
     return res.status(200).send({
       success: true,
       data: rooms,
     });
   }
+  async getRoomByNumber(req: HotelRequest, res: Response) {
+    const number = parseInt(req.params.number);
+
+    if (!number) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid number",
+      });
+    }
+
+    if (!req.hotel?.id) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
+
+    const hotelId = req.hotel?.id;
+
+    const room = await roomService.findByNumber(number, hotelId);
+    if (!room) {
+      return res.status(404).send({
+        success: false,
+        message: "Room not found",
+      });
+    }
+
+    return res.status(200).send({
+      success: true,
+      data: room,
+    });
+  }
+
+  
 }
 
 export default new RoomController();

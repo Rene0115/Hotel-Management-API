@@ -10,32 +10,36 @@ interface HotelDocument extends Hotel, Document {
   getPublicData: () => HotelPublicData;
 }
 
-const hotelSchema = new Schema<HotelDocument>({
-  name: {
-    type: String,
-    required: true,
+const hotelSchema = new Schema<HotelDocument>(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    logo: {
+      type: String,
+    },
+    noOfRooms: {
+      type: Number,
+      default: 0,
+    },
+    phone: {
+      type: String,
+    },
+    altPhone: {
+      type: String,
+    },
   },
-  email: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  logo: {
-    type: String,
-  },
-  noOfRooms: {
-    type: Number,
-  },
-  phone: {
-    type: String,
-  },
-  altPhone: {
-    type: String,
-  },
-},{timestamps: true, versionKey: false});
+  { timestamps: true, versionKey: false }
+);
 
 hotelSchema.methods.getPublicData = function (): HotelPublicData {
   return {
