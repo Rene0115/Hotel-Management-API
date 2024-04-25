@@ -14,7 +14,9 @@ const middleware = (app: express.Application) => {
   app.use(helmet());
   app.use(router);
   app.use("*", (req: express.Request, res: express.Response) => {
-    res.status(404).send("Route not found");
+    console.log("Route not found");
+    
+    return res.status(404).send("Route not found");
   });
 };
 
