@@ -23,11 +23,10 @@ class RoomServices {
     const query = {
       ...(hotelId ? { hotelId } : {}),
       ...(status ? { status } : {}),
-      ...(category ? { category } : {})
+      ...(category ? { category } : {}),
     };
     return await roomModel.find(query);
   }
-  
 
   async findByNumber(number: number, hotelId: string) {
     const room = await roomModel.findOne({ number: number, hotelId: hotelId });
