@@ -1,6 +1,7 @@
 export interface RoomCategory {
   category: string;
   hotelId: string;
+  noOfRooms?: number;
 }
 
 export interface Booking {
@@ -18,6 +19,8 @@ export interface Room {
   category: string | undefined;
   hotelId: string;
   status: "AVAILABLE" | "BOOKED";
+  bookedBy: string;
+  dateBooked: Date;
 }
 
 export interface AssignCategoryToRooms {

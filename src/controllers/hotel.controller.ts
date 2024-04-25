@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { uploadImage } from "../config/cloudinary.config.js";
 import { logger } from "../app.js";
 import { RoomCategory } from "../interfaces/room.interface.js";
+import roomService from "../services/room.service.js";
 
 class HotelController {
   async createHotel(req: HotelRequest, res: Response) {
@@ -103,6 +104,9 @@ class HotelController {
           .status(400)
           .send({ success: false, message: "Incorrect Credentials" });
       }
+      const rooms = await roomService.getAllRoomsfilter(hotelExists.id);
+      hotelExists.noOfRooms = rooms.length;
+      await hotelExists.save();
       const hotelPublicData = hotelExists.getPublicData();
       return res.status(200).send({
         success: true,
@@ -152,14 +156,15 @@ class HotelController {
 
       const id = req.hotel?.id;
 
-
       const data: RoomCategory = {
         category: req.body.category.trim().toLowerCase(),
         hotelId: id,
       };
 
       const hotelCategories = await hotelService.getHotelCategories(id);
-      if (hotelCategories.includes(data.category)) {
+      if (
+        hotelCategories.some((category) => category.category === data.category)
+      ) {
         return res.status(409).send({
           success: false,
           message: "Category already exists",
@@ -216,6 +221,18 @@ class HotelController {
     const deletedCategory = await hotelService.deleteCategory(categoryId);
 
     if (deletedCategory) {
+      const rooms = await roomService.getAllRoomsfilter(
+        hotelId,
+        undefined,
+        category.category
+      );
+      for (const room of rooms) {
+        const roomD = await roomService.findByNumber(room.number, hotelId);
+        if (roomD) {
+          roomD.category = undefined;
+          await roomD.save();
+        }
+      }
       return res.status(200).send({
         success: true,
         message: "Category deleted successfully",

@@ -67,15 +67,20 @@ class HotelServices {
   }
 
   async getHotelCategories(hotelId: string) {
-    const categoriesModel = await roomCategoryModel.find({ hotelId: hotelId });
-    const categories = categoriesModel.map((category: RoomCategory) => {
-      return category.category;
-    });
+    const categories = await roomCategoryModel.find({ hotelId: hotelId });
     return categories;
   }
 
-  async getCategoryById(id: string){
+  async getCategoryById(id: string) {
     const category = await roomCategoryModel.findById(id);
+    return category;
+  }
+
+  async getCategoryByName(name: string, hotelId: string) {
+    const category = await roomCategoryModel.findOne({
+      category: name,
+      hotelId: hotelId,
+    });
     return category;
   }
 }

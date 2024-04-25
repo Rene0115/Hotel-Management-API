@@ -73,8 +73,6 @@ class RoomController {
       category as string | undefined
     );
 
-    hotel.noOfRooms = rooms.length;
-    await hotel.save();
     if (rooms.length < 1) {
       return res.status(404).send({
         success: false,
@@ -153,8 +151,11 @@ class RoomController {
           message: "Invalid Token",
         });
       }
-      const validCategory = await hotelService.getHotelCategories(hotelId);
-      if (!validCategory.includes(category)) {
+      const validCategory = await hotelService.getCategoryByName(
+        category,
+        hotelId
+      );
+      if (!validCategory) {
         return res.status(400).send({
           success: false,
           message: "Category does not exist",
@@ -167,10 +168,14 @@ class RoomController {
         undefined
       );
       const availableRoomNumbers = availableRooms.map((room) => room.number);
+      console.log(availableRoomNumbers);
 
       const unavailableRooms = selectedRooms.filter(
         (number) => !availableRoomNumbers.includes(number)
       );
+
+      console.log(unavailableRooms);
+
       if (unavailableRooms.length > 0) {
         const rooms = convertArrayToString(unavailableRooms);
         return res.status(400).send({
@@ -182,10 +187,29 @@ class RoomController {
       for (const number of selectedRooms) {
         const room = await roomService.findByNumber(number, hotelId);
         if (!room) return;
+        if (room.category !== undefined) {
+          const prevCategory = await hotelService.getCategoryByName(
+            room.category,
+            hotelId
+          );
+          if (prevCategory) {
+            prevCategory.noOfRooms = (prevCategory.noOfRooms as number) - 1;
+            await prevCategory.save();
+          }
+        }
+
         room.category = category;
         await room.save();
+
         updatedRooms.push(room);
       }
+      const rooms = await roomService.getAllRoomsfilter(
+        hotelId,
+        undefined,
+        category
+      );
+      validCategory.noOfRooms = rooms.length;
+      await validCategory.save();
 
       return res.status(200).send({
         success: true,

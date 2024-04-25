@@ -32,6 +32,7 @@ class RoomServices {
     const room = await roomModel.findOne({ number: number, hotelId: hotelId });
     return room;
   }
+
 }
 
 export default new RoomServices();

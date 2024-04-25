@@ -20,6 +20,12 @@ const roomSchema = new mongoose.Schema<Room>(
       enum: ["AVAILABLE", "BOOKED"],
       default: "AVAILABLE",
     },
+    bookedBy:{
+      type: String,
+    },
+    dateBooked:{
+      type: Date
+    }
   },
   { timestamps: true, versionKey: false }
 );
