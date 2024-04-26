@@ -15,6 +15,17 @@ export interface Booking {
   checkOutDate: Date;
 }
 
+export interface UpdateBooking {
+  bookingId: string;
+  name?: string;
+  email?: string;
+  phone?: number;
+  roomCategory?: string;
+  roomNumber?: number;
+  checkInDate?: Date;
+  checkOutDate?: Date;
+}
+
 export interface Room {
   number: number;
   category: string | undefined;

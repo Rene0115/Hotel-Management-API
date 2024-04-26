@@ -2,6 +2,7 @@ import Joi from "joi";
 import {
   AssignCategoryToRooms,
   Booking,
+  UpdateBooking,
 } from "../interfaces/room.interface.js";
 
 export const updateRoomCategorySchema = Joi.object<AssignCategoryToRooms>({
@@ -16,4 +17,13 @@ export const bookingSchema = Joi.object<Booking>({
   roomNumber: Joi.number().required(),
   checkInDate: Joi.date().required(),
   checkOutDate: Joi.date().required(),
+});
+
+export const updateBookingSchema = Joi.object<UpdateBooking>({
+  bookingId: Joi.string().required(),
+  name: Joi.string().optional().trim(),
+  email: Joi.string().email().optional().trim(),
+  phone: Joi.string().optional().trim(),
+//   checkInDate: Joi.date().optional(),
+  checkOutDate: Joi.date().optional(),
 });

@@ -5,6 +5,7 @@ import roomService from "../services/room.service.js";
 import { convertArrayToString } from "../utils/functions.js";
 import moment from "moment";
 import { Booking } from "../interfaces/room.interface.js";
+import { UpdateBooking } from "../interfaces/room.interface.js";
 
 class RoomController {
   async createRooms(req: HotelRequest, res: Response) {
@@ -300,6 +301,74 @@ class RoomController {
       data: booking,
     });
   }
+
+  async updateBooking(req: HotelRequest, res: Response) {
+    if (!req.hotel?.id) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
+    const hotelId = req.hotel?.id;
+    const hotel = await hotelService.findById(hotelId);
+    if (!hotel) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
+    const data = req.body as UpdateBooking;
+    if (!data.bookingId) {
+      return res.status(400).send({
+        success: false,
+        message: "Must provide a booking id",
+      });
+    }
+    const booking = await roomService.findBookingById(data.bookingId);
+    if (!booking) {
+      return res.status(404).send({
+        success: false,
+        message: "Booking not found",
+      });
+    }
+    if (booking.hotelId !== hotelId) {
+      return res.status(400).send({
+        success: false,
+        message: "This booking does not belong to you",
+      });
+    }
+    const now: moment.Moment = moment(new Date());
+    if (data.checkOutDate) {
+      const checkInDate = moment(booking.checkInDate);
+      const checkOutDate = moment(data.checkOutDate);
+      if (checkOutDate.isBefore(now)) {
+        return res.status(400).send({
+          success: false,
+          message: "Check out date must be in the future",
+        });
+      }
+      if (checkInDate.isAfter(checkOutDate)) {
+        return res.status(400).send({
+          success: false,
+          message: `Selected check out date is before check in date: ${moment(
+            booking.checkInDate
+          ).format("MMMM Do YYYY, h:mm:ss a")} `,
+        });
+      }
+      data.checkOutDate = checkOutDate.toDate();
+    }
+
+    const { bookingId, ...updateData } = data; // to remove the bookingId key value pair
+
+    const updatedBooking = await roomService.updateBooking(booking.id, data);
+    return res.status(200).send({
+      success: true,
+      message: "Booking updated successfully",
+      data: updatedBooking,
+    });
+  }
+
+  async cancelBooking() {}
 }
 
 export default new RoomController();

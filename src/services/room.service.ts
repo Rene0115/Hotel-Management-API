@@ -1,4 +1,4 @@
-import { Booking, Room } from "../interfaces/room.interface.js";
+import { Booking, Room, UpdateBooking } from "../interfaces/room.interface.js";
 import { bookingModel } from "../models/booking.model.js";
 import { roomModel } from "../models/room.model.js";
 
@@ -50,6 +50,24 @@ class RoomServices {
       ...(checkOutDate ? { checkOutDate } : {}),
     };
     return await bookingModel.find(query);
+  }
+
+  async updateBooking(bookingId: string, data: UpdateBooking) {
+    const booking = await bookingModel.findByIdAndUpdate(bookingId, data, {
+      new: true,
+    });
+    return booking;
+  }
+
+  async cancelBooking(id: string) {
+    const booking = await bookingModel.findByIdAndDelete(id);
+    if (booking) return true;
+    else return false;
+  }
+
+  async findBookingById(id: string) {
+    const booking = await bookingModel.findById(id);
+    return booking;
   }
 }
 
