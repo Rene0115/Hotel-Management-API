@@ -5,6 +5,7 @@ export interface RoomCategory {
 }
 
 export interface Booking {
+  hotelId: string;
   name: string;
   email: string;
   phone: number;

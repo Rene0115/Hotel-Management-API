@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { Booking } from "../interfaces/room.interface.js";
 
-const bookingSchema = new mongoose.Schema(
+const bookingSchema = new mongoose.Schema<Booking>(
   {
     name: {
       type: String,
@@ -15,7 +15,7 @@ const bookingSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    roomType: {
+    roomCategory: {
       type: String,
       required: true,
     },
@@ -29,6 +29,10 @@ const bookingSchema = new mongoose.Schema(
     },
     checkOutDate: {
       type: Date,
+      required: true,
+    },
+    hotelId: {
+      type: String,
       required: true,
     },
   },

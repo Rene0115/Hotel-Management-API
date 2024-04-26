@@ -3,6 +3,8 @@ import { Hotel, HotelRequest } from "../interfaces/hotel.interface.js";
 import hotelService from "../services/hotel.service.js";
 import roomService from "../services/room.service.js";
 import { convertArrayToString } from "../utils/functions.js";
+import moment from "moment";
+import { Booking } from "../interfaces/room.interface.js";
 
 class RoomController {
   async createRooms(req: HotelRequest, res: Response) {
@@ -224,6 +226,79 @@ class RoomController {
         message: error.message,
       });
     }
+  }
+  async createBooking(req: HotelRequest, res: Response) {
+    if (!req.hotel?.id) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
+    const hotelId = req.hotel?.id;
+    const hotel = await hotelService.findById(hotelId);
+    if (!hotel) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
+    const roomNumber = req.body.roomNumber;
+    const room = await roomService.findByNumber(roomNumber, hotelId);
+    if (!room) {
+      return res.status(404).send({
+        success: false,
+        message: "Room not found",
+      });
+    }
+    if (room.status === "BOOKED") {
+      return res.status(400).send({
+        success: false,
+        message: "Room is already booked",
+      });
+    }
+    if (!room.category) {
+      return res.status(400).send({
+        success: false,
+        message: "Room has no category",
+      });
+    }
+    const data: Booking = {
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      roomCategory: room.category,
+      roomNumber: roomNumber,
+      checkInDate: req.body.checkInDate,
+      checkOutDate: req.body.checkOutDate,
+      hotelId: hotelId,
+    };
+    const now: moment.Moment = moment(new Date());
+    const checkInDate = moment(data.checkInDate);
+    const checkOutDate = moment(data.checkOutDate);
+    if (checkInDate.isBefore(now) || checkOutDate.isBefore(now)) {
+      return res.status(400).send({
+        success: false,
+        message: "Check in date and check out date must be in the future",
+      });
+    }
+    if (checkInDate.isAfter(checkOutDate)) {
+      return res.status(400).send({
+        success: false,
+        message: "Check in date must be before check out date",
+      });
+    }
+
+    room.status = "BOOKED";
+    await room.save();
+
+    data.checkInDate = checkInDate.toDate();
+    data.checkOutDate = checkOutDate.toDate();
+    const booking = await roomService.createBooking(data);
+    return res.status(200).send({
+      success: true,
+      message: `Room ${roomNumber} has been booked by ${data.name}`,
+      data: booking,
+    });
   }
 }
 
