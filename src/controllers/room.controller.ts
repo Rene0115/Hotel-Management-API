@@ -358,8 +358,6 @@ class RoomController {
       data.checkOutDate = checkOutDate.toDate();
     }
 
-    const { bookingId, ...updateData } = data; // to remove the bookingId key value pair
-
     const updatedBooking = await roomService.updateBooking(booking.id, data);
     return res.status(200).send({
       success: true,
