@@ -8,6 +8,7 @@ const roomRouter = express.Router();
 
 roomRouter.post("/create", authentication, roomController.createRooms);
 roomRouter.get("/", authentication, roomController.getRooms);
+roomRouter.get("/bookings", authentication, roomController.getBookings)
 roomRouter.get("/:number", authentication, roomController.getRoomByNumber);
 roomRouter.post("/category", authentication, validator(updateRoomCategorySchema), roomController.assignCategoryToRoom)
 roomRouter.post("/book", authentication, validator(bookingSchema), roomController.createBooking)

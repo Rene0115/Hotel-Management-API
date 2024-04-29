@@ -367,6 +367,61 @@ class RoomController {
   }
 
   async cancelBooking() {}
+
+  async getBookings(req: HotelRequest, res: Response) {
+    try {
+      if (!req.hotel?.id) {
+        return res.status(400).send({
+          success: false,
+          message: "Invalid Token",
+        });
+      }
+      const hotelId = req.hotel?.id;
+      const hotel = await hotelService.findById(hotelId);
+      if (!hotel) {
+        return res.status(400).send({
+          success: false,
+          message: "Invalid Token",
+        });
+      }
+      let checkInDate;
+      let checkOutDate;
+
+      if (req.query.checkInDate) {
+        checkInDate = req.query.checkInDate as string;
+        checkInDate = checkInDate.replace(" ", "+");
+        console.log(checkInDate);
+        checkInDate = moment(checkInDate).toDate();
+      }
+      if (req.query.checkOutDate) {
+        checkOutDate = new Date(Date.parse(req.query.checkOutDate as string));
+      }
+      console.log(checkInDate);
+
+      const bookings = await roomService.getAllBookings(
+        hotelId,
+        checkInDate,
+        checkOutDate
+      );
+      if (bookings.length < 1) {
+        return res.status(404).send({
+          success: false,
+          message: "No bookings found",
+        });
+      }
+      return res.status(200).send({
+        success: true,
+        data: bookings,
+      });
+    } catch (error: any) {
+      console.log(error);
+
+      return res.status(400).send({
+        success: false,
+        error: error.message,
+      });
+    }
+  }
 }
 
 export default new RoomController();
