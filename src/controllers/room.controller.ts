@@ -46,6 +46,7 @@ class RoomController {
     return res.status(200).send({
       success: true,
       message: "Rooms created successfully",
+      noOfRooms: hotel.noOfRooms,
       data: rooms,
     });
   }
