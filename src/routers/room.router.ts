@@ -13,6 +13,7 @@ roomRouter.get("/:number", authentication, roomController.getRoomByNumber);
 roomRouter.post("/category", authentication, validator(updateRoomCategorySchema), roomController.assignCategoryToRoom)
 roomRouter.post("/book", authentication, validator(bookingSchema), roomController.createBooking)
 roomRouter.put("/update-booking", authentication, validator(updateBookingSchema), roomController.updateBooking)
+roomRouter.delete("/cancel-booking", authentication, roomController.cancelBooking)
 
 
 export default roomRouter;

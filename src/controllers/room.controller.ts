@@ -367,7 +367,74 @@ class RoomController {
     });
   }
 
-  async cancelBooking() {}
+  async cancelBooking(req: HotelRequest, res: Response) {
+    try {
+      if (!req.hotel?.id) {
+        return res.status(400).send({
+          success: false,
+          message: "Invalid Token",
+        });
+      }
+      const hotelId = req.hotel?.id;
+      const hotel = await hotelService.findById(hotelId);
+      if (!hotel) {
+        return res.status(400).send({
+          success: false,
+          message: "Invalid Token",
+        });
+      }
+      const bookingId = req.body.bookingId;
+      if (!bookingId) {
+        return res.status(400).send({
+          success: false,
+          message: "Must provide a booking id",
+        });
+      }
+
+      const booking = await roomService.findBookingById(bookingId);
+      if (!booking) {
+        return res.status(404).send({
+          success: false,
+          message: "Booking not found",
+        });
+      }
+      if (booking.hotelId !== hotelId) {
+        return res.status(400).send({
+          success: false,
+          message: "You did not book this room",
+        });
+      }
+      const room = await roomService.findByNumber(booking.roomNumber, hotelId);
+
+      if (!room) {
+        return res.status(404).send({
+          success: false,
+          message: "Room not found",
+        });
+      }
+
+      const deleteBooking = await roomService.cancelBooking(bookingId);
+      if (!deleteBooking) {
+        return res.status(400).send({
+          success: false,
+          message: "Booking Deletion failed",
+        });
+      }
+      room.status = "AVAILABLE";
+      await room.save();
+      
+      return res.status(200).send({
+        success: true,
+        message: "Booking cancelled successfully",
+      });
+    } catch (error: any) {
+      console.log(error);
+      return res.status(400).send({
+        success: true,
+        message: error.message,
+      });
+    }
+  }
 
   async getBookings(req: HotelRequest, res: Response) {
     try {

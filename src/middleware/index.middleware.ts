@@ -11,22 +11,25 @@ const middleware = (app: express.Application) => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
   app.use(cors());
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    const queryString = req.query.checkInDate
-    console.log(queryString);
-    
-    console.log("here1");
-    console.log(typeof queryString)
-    if (typeof queryString === "string") {
-      console.log("here");
+  app.use(
+    "/room/bookings",
+    (req: Request, res: Response, next: NextFunction) => {
+      const queryString = req.query.checkInDate;
+      console.log(queryString);
 
+      console.log("here1");
       console.log(typeof queryString);
+      if (typeof queryString === "string") {
+        console.log("here");
 
-      const decodedQueryString = queryString.replace(/%2B/g, "+");
-      req.query.checkInDate = decodedQueryString;
+        console.log(typeof queryString);
+
+        const decodedQueryString = queryString.replace(/%2B/g, "+");
+        req.query.checkInDate = decodedQueryString;
+      }
+      next();
     }
-    next();
-  });
+  );
 
   app.use(helmet());
   app.use(router);
