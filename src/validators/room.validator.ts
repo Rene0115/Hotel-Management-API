@@ -5,7 +5,7 @@ import {
   UpdateBooking,
 } from "../interfaces/room.interface.js";
 
-export const updateRoomCategorySchema = Joi.object<AssignCategoryToRooms>({
+export const assignCategorySchema = Joi.object<AssignCategoryToRooms>({
   category: Joi.string().required().trim(),
   roomNumbers: Joi.array().items(Joi.number().required()).required(),
 });

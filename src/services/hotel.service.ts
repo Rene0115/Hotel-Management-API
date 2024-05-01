@@ -83,6 +83,15 @@ class HotelServices {
     });
     return category;
   }
+
+  async updateCategoryName(name: string, categoryId: string, hotelId: string) {
+    const category = await roomCategoryModel.findOneAndUpdate(
+      { _id: categoryId, hotelId: hotelId },
+      { category: name },
+      { new: true }
+    );
+    return category;
+  }
 }
 
 export default new HotelServices();

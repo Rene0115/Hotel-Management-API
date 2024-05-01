@@ -4,6 +4,11 @@ export interface RoomCategory {
   noOfRooms?: number;
 }
 
+export interface updateCategory {
+  category: string;
+  categoryId: string;
+}
+
 export interface Booking {
   hotelId: string;
   name: string;

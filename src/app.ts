@@ -47,7 +47,7 @@ const port = process.env.PORT;
 
 const start = () => {
   app.listen(port, (): void => {
-    logger.info("listening on port 4000");
+    logger.info(`listening on port ${port}`);
   });
   database();
 };

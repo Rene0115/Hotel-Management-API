@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { Hotel, updateHotel } from "../interfaces/hotel.interface.js";
-import { RoomCategory } from "../interfaces/room.interface.js";
+import { RoomCategory, updateCategory } from "../interfaces/room.interface.js";
 
 export const signupSchema = Joi.object<Hotel>({
   email: Joi.string().email().required(),
@@ -25,4 +25,9 @@ export const updateSchema = Joi.object<updateHotel>({
 
 export const createCategorySchema = Joi.object<RoomCategory>({
   category: Joi.string().required().trim(),
+});
+
+export const updateCategorySchema = Joi.object<updateCategory>({
+  category: Joi.string().required().trim(),
+  categoryId: Joi.string().required().trim(),
 });

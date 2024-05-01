@@ -269,6 +269,73 @@ class HotelController {
       data: categories,
     });
   }
+
+  async updateCategories(req: HotelRequest, res: Response) {
+    try {
+      if (!req.hotel?.id) {
+        return res.status(400).send({
+          success: false,
+          message: "Invalid Token",
+        });
+      }
+
+      const hotelId = req.hotel?.id;
+
+      const hotel = await hotelService.findById(hotelId);
+      if (!hotel) {
+        return res.status(400).send({
+          success: false,
+          message: "Invalid Token",
+        });
+      }
+      const newCategory = req.body.category;
+      const categoryId = req.body.categoryId;
+      const oldCategoryModel = await hotelService.getCategoryById(categoryId);
+
+      if (!oldCategoryModel) {
+        return res.status(404).send({
+          success: false,
+          message: "Category does not exist",
+        });
+      }
+      const oldCategory = oldCategoryModel.category;
+      const category = await hotelService.updateCategoryName(
+        newCategory,
+        categoryId,
+        hotelId
+      );
+      if (!category) {
+        return res.status(404).send({
+          success: false,
+          message: "Category does not exist",
+        });
+      }
+
+      const roomsWithOldCategory = await roomService.getAllRoomsfilter(
+        hotelId,
+        undefined,
+        oldCategory
+      );
+      for (const room of roomsWithOldCategory) {
+        const roomD = await roomService.findByNumber(room.number, hotelId);
+        if (roomD) {
+          roomD.category = newCategory;
+          await roomD.save();
+        }
+      }
+
+      return res.status(200).send({
+        success: true,
+        message: "Category updated successfully",
+        data: category,
+      });
+    } catch (error: any) {
+      return res.status(400).send({
+        success: false,
+        error: error.message,
+      });
+    }
+  }
 }
 
 export default new HotelController();

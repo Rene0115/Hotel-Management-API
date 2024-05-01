@@ -1,7 +1,7 @@
 import express from "express"
 import hotelController from "../controllers/hotel.controller.js";
 import validator from "../validators/validator.js";
-import { createCategorySchema, loginSchema, signupSchema, updateSchema } from "../validators/hotel.validator.js";
+import { createCategorySchema, loginSchema, signupSchema, updateCategorySchema, updateSchema } from "../validators/hotel.validator.js";
 import authentication from "../middleware/auth.middleware.js";
 import store from "../config/multer.config.js";
 
@@ -15,5 +15,6 @@ hotelRouter.put("/update", authentication, validator(updateSchema), hotelControl
 hotelRouter.post("/create-category", authentication, validator(createCategorySchema), hotelController.createCategory)
 hotelRouter.delete("/delete-category/:id", authentication, hotelController.deleteCategory)
 hotelRouter.get("/categories", authentication, hotelController.getCategories)
+hotelRouter.put("/update-category", authentication, validator(updateCategorySchema), hotelController.updateCategories)
 
 export default hotelRouter;
